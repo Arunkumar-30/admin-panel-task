@@ -8,11 +8,16 @@ export const register = async (req: Request, res: Response) => {
 
   try {
     const existing = await User.findOne({ where: { email } });
-    if (existing) return res.status(400).json({ error: 'User already exists' });
+    if (existing)
+      {
+         return res.status(200).json({ error: 'User already exists'});
+      } else{
+      const hashed = await bcrypt.hash(password, 10);
+      const user = await User.create({ name, email, password: hashed });
+       res.status(201).json(user);
+      }
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed });
-    res.status(201).json(user);
+   
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }

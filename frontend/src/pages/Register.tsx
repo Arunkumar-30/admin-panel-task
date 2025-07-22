@@ -20,9 +20,15 @@ export default function Register() {
     const { confirmPassword, ...userData } = user;
 
     try {
-      await register(userData); // send only name, email, password
-      alert("Registration Successful!");
-      navigate("/");
+      const userDetail = await register(userData);
+      console.log(userDetail);
+      if (userDetail.status == 200) {
+        alert("User already exisit");
+      } else {
+        await register(userData);
+        alert("Registration Successful!");
+        navigate("/");
+      }
     } catch (err: any) {
       console.error("Registration failed:", err.response?.data || err.message);
       alert("Registration Failed");
